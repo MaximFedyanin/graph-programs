@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+x_min = 3
+x_max = 2000
+x_values = np.arange(x_min, x_max + 1)
+
+def find_min_k(x):
+    p = math.floor(math.log(x, math.exp(1)))
+    rhs = math.ceil(x * (x - 1) / (2 * p)) if p > 0 else float('inf')
+    for k in range(1, x + 1):
+        lhs = math.floor(x / k) * (k * (k - 1) // 2) + (x % k) * ((x % k) - 1) // 2
+        if lhs >= rhs:
+            return k
+    return x
+
+def y1(x_values):
+    return np.array([find_min_k(x) for x in x_values])
+
+def y2(x_values):
+    y_vals = []
+    for x in x_values:
+        p = math.floor(math.log(x, math.exp(1)))
+        y = np.ceil(x / (p - 1)) if (p - 1) > 0 else np.inf
+        y_vals.append(y)
+    return np.array(y_vals)
+
+def y3(x_values):
+    y_vals = []
+    for x in x_values:
+        p = math.floor(math.log(x, math.exp(1)))
+        y = np.ceil((x - 1) / p) + 1 if p > 0 else np.inf
+        y_vals.append(y)
+    return np.array(y_vals)
+
+def plot_functions(x_values):
+    y_1 = y1(x_values)
+    y_2 = y2(x_values)
+    y_3 = y3(x_values)
+
+    plt.figure(figsize=(12, 7))
+    plt.plot(x_values, y_1, label='y1 = min k по условию', color='blue')
+    plt.plot(x_values, y_2, label='y2 = ceil(x/(p-1))', color='red')
+    plt.plot(x_values, y_3, label='y3 = ceil((x-1)/p) + 1', color='green')
+
+    plt.xlabel('x (число вершин)')
+    plt.ylabel('y')
+    plt.title('Графики функций при p = [ln(x)], x от 6 до 2000')
+    plt.legend()
+    plt.grid(True)
+    plt.xlim(x_min, x_max)
+    plt.show()
+
+plot_functions(x_values)
